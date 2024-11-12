@@ -1,6 +1,8 @@
 *{
   text-decoration: none;
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 #mainContent {
@@ -8,13 +10,9 @@
   background: #eccccc;
 }
 
-.ui-autocomplete {
-	position: absolute;
-	top: 0;
-	left: 0;
-	cursor: default;
+.listProducts {
+  height: 200px;
 }
-.ui-autocomplete:hover {
-  background-color: blue;
-  color: #eccccc;
+.listProducts select, img{
+  height: 200px;
 }
