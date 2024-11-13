@@ -7,7 +7,7 @@ const CardProducts = () => {
   const [detalle, setDetalle] = useState([]);
   const [image, setImage] = useState('');
   const [isActiveList, setIsActiveList] = useState(false)
-
+  const [focus, setFocus] = useState(true)
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
@@ -18,19 +18,33 @@ const CardProducts = () => {
     product.nombre.toLowerCase().includes(filter.toLowerCase())
   );
 
+  const deleteItem = (id) => {
+    const newDetails = detalle.filter((item) => item.id !== id)
+    setDetalle(newDetails);
+  }
+
   // Agregar producto al carrito
   const productSelected = (id) => {
-    console.log(id);
-    const [product] = productos.filter((item) => item.id === id)
-    const newItem = {
-      id: product.id,
-      nombre: product.nombre,
-      cantidad: 1,
-      precio: product.precio,
-      total: product.precio * 1
+    if (id) {
+
+      const [item] = detalle.filter((item) => item.id === id)
+      if (!item) {
+        const [product] = productos.filter((item) => item.id === id)
+        const newItem = {
+          id: product.id,
+          nombre: product.nombre,
+          cantidad: 1,
+          precio: product.precio,
+          total: product.precio * 1
+        }
+        setImage("")
+        setDetalle([newItem, ...detalle])
+      } else {
+        item.cantidad = item.cantidad + 1
+        item.total = item.cantidad * item.precio
+      }
     }
-    setImage("")
-    setDetalle([newItem, ...detalle])
+    // return
   }
 
   const imageSelected = (id) => {
@@ -52,25 +66,48 @@ const CardProducts = () => {
                 <h4 className="card-title fs-6">LISTADO DE PRODUCTOS</h4>
                 <div className="row">
                   <div className="col-md-12">
-                    <label>Digite el producto a vender</label>
+                    <label>Digite el producto a vender
+                    </label>
                     <input
+                      autoFocus={focus}
+                      onFocus={(e) => focus}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
+                          if (e.target.value === "") {
+                            return setIsActiveList(false)
+                          }
+                          if (filteredProducts.length < 1) {
+                            return (
+                              setIsActiveList(false),
+                              setFilter(""),
+                              setFocus(true)
+                            )
+                          }
                           setFilter(e.target.value);
-                          productSelected(filteredProducts[0].id);
+                          if (filteredProducts) {
+                            productSelected(filteredProducts[0].id);
+                            setIsActiveList(false)
+                          }
+                          setFocus(true)
                           e.target.value = "";
                           setFilter("");
-                          setIsActiveList(false)
+                          setFocus(true)
                         }
                       }}
                       value={filter}
                       onChange={(e) => {
+                        if (e.target.value.length < 1) {
+                          return (
+                            setFilter(""),
+                            setIsActiveList(false)
+                          )
+                        }
                         setFilter(e.target.value)
                         setIsActiveList(true)
                       }}
                       type="text"
                       placeholder="Ingrese el código de barras o el nombre del producto"
-                      className="form-control form-control-sm"
+                      className="form-control form-control-sm mt-2"
                       id="iptCodigoVenta"
                       name="iptCodigoVenta"
                       aria-label="Small"
@@ -89,19 +126,21 @@ const CardProducts = () => {
                               multiple={true}
                               onChange={(e) => {
                                 imageSelected(e.target.value);
-                                console.log(e.target.value);
                                 setIsActiveList(true)
                               }}
+
                               onKeyDown={(e) => {
+                                if (e.target.value === "") {
+                                  return
+                                }
                                 if (e.key === "Enter") {
                                   productSelected(e.target.value);
-                                  console.log(e.target.value);
                                   e.target.value = "";
+                                  setFocus(true);
                                   setFilter("");
-                                  setIsActiveList(false)
+                                  setIsActiveList(false);
                                 }
                               }}
-
                               className="form-select"
                               aria-label="Default select example"
                             >
@@ -124,41 +163,40 @@ const CardProducts = () => {
                   }
                 </div>
                 {/* <!-- LISTADO QUE CONTIENE LOS PRODUCTOS QUE SE VAN AGREGANDO PARA LA COMPRA --> */}
-                {!isActiveList && <div className="col-md-12 mt-2">
-                  <table id="tbl_ListadoProductos" className="table table-striped table-hover table-sm table-bordered">
-                    <thead className="bg-main text-left">
-                      <tr>
-                        <th>Codigo</th>
-                        <th>Descripcion</th>
-                        <th>Cantidad</th>
-                        <th>Precio</th>
-                        <th>Total</th>
-                        <th>Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody className="small text-left">
-                      {detalle.map((item) => (
-                        <tr key={item.id}>
-                          <td>{item.id}</td>
-                          <td>{item.nombre}</td>
-                          <td>{item.cantidad}</td>
-                          <td>{item.precio}</td>
-                          <td>{item.total}</td>
-                          <td className="text-left">
-                            <button className="btn-primary text-sm mr-2" >E</button>
-                            <span> </span>
-                            <button className="btn-danger text-lg mr-2" >X</button>
-                          </td>
-                        </tr>
-                      ))}
-                      {detalle.length < 1 &&
+                {!isActiveList &&
+                  <div className="col-md-12 mt-2">
+                    <table id="tbl_ListadoProductos" className="table table-striped table-hover table-sm table-bordered">
+                      <thead className="bg-main">
                         <tr>
-                          <td colSpan={6} className="text-center">No hay productos</td>
+                          <th>Codigo</th>
+                          <th>Descripcion</th>
+                          <th>Cantidad</th>
+                          <th>Precio</th>
+                          <th>Total</th>
+                          <th>Acciones</th>
                         </tr>
-                      }
-                    </tbody>
-                  </table>
-                </div>}
+                      </thead>
+                      <tbody className="small text-left">
+                        {detalle.map((item) => (
+                          <tr key={item.id}>
+                            <td>{item.id}</td>
+                            <td>{item.nombre}</td>
+                            <td>{item.cantidad}</td>
+                            <td>{item.precio}</td>
+                            <td>{item.total}</td>
+                            <td className="text-center">
+                              <button className="btn btn-danger text-lg mr-2" onClick={(e) => deleteItem(item.id)} >X</button>
+                            </td>
+                          </tr>
+                        ))}
+                        {detalle.length < 1 &&
+                          <tr>
+                            <td colSpan={6} className="text-center">No hay productos</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>}
               </div>
             </div>
           </div>
