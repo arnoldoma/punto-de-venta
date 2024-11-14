@@ -1,7 +1,7 @@
 const Header = () => {
     return (
         <>
-            <header className="bg-secondary">
+            <header className="bg-success">
                 <div className="navbar align-items-center">
                     <div className="mx-2">
                         <h1>Logo</h1>
@@ -11,13 +11,12 @@ const Header = () => {
                             type="text"
                             placeholder="Buscar..."
                         />
-
                     </form>
                     <div className="d-flex bg-dark text-white">
                         <ul className="d-flex align-items-center gap-1 my-2">
-                            <li><a href="#">hola1</a></li>
-                            <li><a href="#">hola2</a></li>
-                            <li><a href="#">hola3</a></li>
+                            <li><a href="#">Inicio</a></li>
+                            <li><a href="#">Nosotros</a></li>
+                            <li><a href="#">Clientes</a></li>
                             <li><a href="#">hola4</a></li>
                         </ul>
                     </div>
