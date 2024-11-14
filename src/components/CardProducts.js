@@ -57,8 +57,8 @@ const CardProducts = () => {
   }
   return (
     <>
-      <div className="row h-100">
-        <div className="card col-8 p-5">
+      <div className="row h-100 ">
+        <div className="card col-8 p-5 bg-dark text-white">
           <div className="">
             <div className="row">
               {/* <!-- INPUT PARA INGRESO DEL CODIGO DE BARRAS O DESCRIPCION DEL PRODUCTO --> */}
@@ -107,7 +107,7 @@ const CardProducts = () => {
                       }}
                       type="text"
                       placeholder="Ingrese el código de barras o el nombre del producto"
-                      className="form-control form-control-sm mt-2"
+                      className="form-control form-control-sm mt-2 bg-dark text-white"
                       id="iptCodigoVenta"
                       name="iptCodigoVenta"
                       aria-label="Small"
@@ -122,6 +122,7 @@ const CardProducts = () => {
                         <div className="col-8">
                           {filteredProducts &&
                             <select
+                              
                               width={100}
                               multiple={true}
                               onChange={(e) => {
@@ -141,7 +142,7 @@ const CardProducts = () => {
                                   setIsActiveList(false);
                                 }
                               }}
-                              className="form-select"
+                              className="form-select bg-danger text-white"
                               aria-label="Default select example"
                             >
                               {filteredProducts.map((item) => (
@@ -165,14 +166,14 @@ const CardProducts = () => {
                 {/* <!-- LISTADO QUE CONTIENE LOS PRODUCTOS QUE SE VAN AGREGANDO PARA LA COMPRA --> */}
                 {!isActiveList &&
                   <div className="col-md-12 mt-2">
-                    <table id="tbl_ListadoProductos" className="table table-striped table-hover table-sm table-bordered">
+                    <table id="tbl_ListadoProductos" className="table table-striped table-hover table-dark   table-sm table-bordered">
                       <thead className="bg-main">
                         <tr>
                           <th>Codigo</th>
                           <th>Descripcion</th>
-                          <th>Cantidad</th>
-                          <th>Precio</th>
-                          <th>Total</th>
+                          <th className="text-center">Cantidad</th>
+                          <th className="text-center">Precio</th>
+                          <th className="text-center">Total</th>
                           <th>Acciones</th>
                         </tr>
                       </thead>
@@ -181,9 +182,9 @@ const CardProducts = () => {
                           <tr key={item.id}>
                             <td>{item.id}</td>
                             <td>{item.nombre}</td>
-                            <td>{item.cantidad}</td>
-                            <td>{item.precio}</td>
-                            <td>{item.total}</td>
+                            <td className="text-center">{item.cantidad}</td>
+                            <td className="text-center">{item.precio}</td>
+                            <td className="text-center">{item.total}</td>
                             <td className="text-center">
                               <button className="btn btn-danger text-lg mr-2" onClick={(e) => deleteItem(item.id)} >X</button>
                             </td>
@@ -201,7 +202,6 @@ const CardProducts = () => {
             </div>
           </div>
         </div>
-
 
         <div className="card col-4">
           <div className="card">

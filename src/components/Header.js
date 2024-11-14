@@ -2,7 +2,7 @@ const Header = () => {
     return (
         <>
             <header className="bg-secondary">
-                <div className="navbar bg-danger align-items-center">
+                <div className="navbar align-items-center">
                     <div className="mx-2">
                         <h1>Logo</h1>
                     </div>
