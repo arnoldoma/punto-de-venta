@@ -33,9 +33,11 @@
 }
 a{
   text-decoration: none;
+
 }
 li{
   text-decoration: none;
+
 }
 
 body{
@@ -50,6 +52,7 @@ body{
 }
 nav{
   height: 40px;
+  
 }
 
 .listProducts {
