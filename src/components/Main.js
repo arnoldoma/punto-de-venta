@@ -4,11 +4,12 @@ import Header from './Header'
 import { Sidebar } from './Sidebar'
 import { Navbar } from './Navbar'
 
+import Header from './layout/Header'
 
 const MainContent = () => {
     return (
         <>
-            <div id='mainContent'>
+            <div className='w-100 bg-info'>
                 <Header />
                 <Sidebar/>
                 <Navbar />
