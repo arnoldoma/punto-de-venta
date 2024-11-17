@@ -1,18 +1,18 @@
 import React from 'react'
 import CardProducts from './CardProducts'
-import Header from './Header'
-import { Sidebar } from './Sidebar'
-import { Navbar } from './Navbar'
+import Header from '../components/layout/Header'
+import { Sidebar } from './layout/Sidebar'
+import { Navbar } from './layout/Navbar'
 
-import Header from './layout/Header'
+// import Header from './layout/Header'
 
 const MainContent = () => {
     return (
         <>
             <div className='w-100 bg-info'>
                 <Header />
-                <Sidebar/>
-                <Navbar />
+                {/* <Sidebar/>
+                <Navbar /> */}
                 <CardProducts />
             </div>
         </>
