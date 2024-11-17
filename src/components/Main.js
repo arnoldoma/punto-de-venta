@@ -1,12 +1,11 @@
 import React from 'react'
-import CardProducts from './CardProducts'
-
+import Header from './layout/Header'
 
 const MainContent = () => {
     return (
         <>
-            <div id='mainContent' className=''>
-                <CardProducts/>
+            <div className='w-100 bg-info'>
+                <Header />
             </div>
         </>
     )
