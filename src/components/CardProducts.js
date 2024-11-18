@@ -72,7 +72,7 @@ const CardProducts = () => {
 
   return (
     <>
-      <div className="col">
+      <div className="container-fluid">
         <Navbar
           iconModulo={"🛒"}
           iconTitle={"🏷️"}

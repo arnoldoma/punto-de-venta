@@ -56,6 +56,13 @@ nav {
   height: 40px;
 }
 
+#mainContent {
+  width: 100vw;
+  background: #2c2a2a;
+  margin: 0;
+  padding: 0;
+}
+
 .listProducts {
   height: 200px;
   display: flex;

@@ -1,18 +1,18 @@
 import React from 'react'
-import CardProducts from '../CardProducts'
+import CardProducts from './CardProducts'
 import Header from './Header'
 import { Sidebar } from './Sidebar'
 import { Navbar } from './Navbar'
-import ImageTemp from '../ImageTemp'
-import Content from '../Content'
+
 
 const MainContent = () => {
     return (
         <>
-            <div className='w-100'>
+            <div id='mainContent'>
                 <Header />
                 <Sidebar/>
-                <Content />
+                <Navbar />
+                <CardProducts />
             </div>
         </>
     )
