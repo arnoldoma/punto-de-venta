@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { productosList } from "../data/productos";
+import { Navbar } from "./layout/Navbar";
 
 const CardProducts = () => {
 
@@ -71,11 +72,19 @@ const CardProducts = () => {
 
   return (
     <>
-      <div className="row h-100 m-0 mt-2">
-        <div className="row m-0 my-2 bg-dark rounded">
+      <div className="col">
+        <Navbar
+          iconModulo={"🛒"}
+          iconTitle={"🏷️"}
+          modulo="Punto de venta"
+          titulo="Crear Venta"
+        />
+        <div className="row m-2 bg-dark-card rounded">
+          {/* Contenido del modulo */}
+
           {/* PRODUCTOS Y DETALLE PEDIDO */}
-          <div className="col-12 col-lg-8 mt-2">
-            <div className="card p-3 mt-2 bg-dark text-white h-100 border rounded">
+          <div className="col-12 col-lg-8 py-3">
+            <div className="card p-3 bg-dark text-white h-100 rounded">
               <div className="col-12">
                 <h4 className="card-title fs-6 d-flex justify-content-around align-items-center mt-2">PUNTO DE VENTA</h4>
                 <div className="row ">
@@ -123,7 +132,7 @@ const CardProducts = () => {
                         }}
                         type="text"
                         placeholder="Ingrese el código de barras o el nombre del producto"
-                        className="form-control form-control-sm mt-2"
+                        className="form-control form-control-sm mt-2 bg-dark-lite"
                         id="iptCodigoVenta"
                         name="iptCodigoVenta"
                         aria-label="Small"
@@ -275,8 +284,8 @@ const CardProducts = () => {
           </div>
 
           {/* Datos del cliente y formas de pago */}
-          <div className="col-12 col-lg-4 mt-2">
-            <div className="card p-3 mt-2 bg-dark text-white h-100  border rounded">
+          <div className="col-12 col-lg-4 py-3">
+            <div className="card p-3 bg-dark text-white h-100 rounded">
               {/* Cuadre de caja */}
               <div className="col-12 text-center">
                 <div className="col-12 d-block justify-content-center text-center">

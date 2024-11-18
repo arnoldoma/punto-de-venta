@@ -39,14 +39,13 @@ const Header = () => {
         //     </div>
         // </header>
 
-        <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+        <nav className="navbar navbar-expand navbar-dark text-white bg-dark-card">
           <div className="container-fluid">
             <a className="navbar-brand image-logo align-items-center justify-content-center text-center" href="#">
               <img src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" className="d-inline-block align-text-center" />
             </a>
             <h4 className="d-inline-block align-text-center mt-1">
               <span className="me-3">E R P </span>
-              
             </h4>
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
               <span className="navbar-toggler-icon"></span>
@@ -54,27 +53,55 @@ const Header = () => {
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
               <ul className="navbar-nav">
                 <li className="nav-item">
-                  <a className="nav-link active" aria-current="page" href="#">Home</a>
+                  <a className="nav-link" aria-current="page" href="#">Contabilidad</a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#">Features</a>
+                  <a className="nav-link" href="#">Finanzas</a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#">Pricing</a>
+                  <a className="nav-link" href="#">Inventario</a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#">Compras</a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link active" href="#">POS</a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#">Ventas</a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#">RRHH</a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#">Distribucion</a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#">Logistica</a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#">Produccion</a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#">E-Commerce</a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="#">C R M</a>
                 </li>
                 <li className="nav-item dropdown">
                   <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Dropdown link
+                    Settings
                   </a>
                   <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <li><a className="dropdown-item" href="#">Action</a></li>
-                    <li><a className="dropdown-item" href="#">Another action</a></li>
-                    <li><a className="dropdown-item" href="#">Something else here</a></li>
+                    <li><a className="dropdown-item" href="#">Usuario</a></li>
+                    <li><a className="dropdown-item" href="#">Permisos</a></li>
+                    <li><a className="dropdown-item" href="#">Empresas</a></li>
                   </ul>
                 </li>
               </ul>
             </div>
           </div>
+          <a className="navbar-brand text-secondary">Salir</a>
         </nav>
       }
     </>

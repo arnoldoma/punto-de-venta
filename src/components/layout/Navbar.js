@@ -1,20 +1,20 @@
 import React from 'react'
 
-export const Navbar = () => {
+export const Navbar = ({iconModulo,iconTitle, modulo, titulo}) => {
     return (
         <>
-            <header className="mx-2 row bg-secondary ">
-                <div className="d-flex text-white align-items-center">
-                    <div className="mx-2 my-2">
-                        <h3>Logo</h3>
+            <nav className="row mx-2 bg-dark-card rounded-bottom">
+                <div className="col-12 d-flex flex-row text-white justify-content-between align-items-center">
+                    <div className="row text-secondary">
+                        <h3>{`${modulo}`}</h3>
                     </div>
-                    <div className="mx-3">
-                        <ul className="mr-5">
-                            <li><a href="inicio">Punto de venta</a></li>
-                        </ul>
+                    <div className="row">
+                        <span className='fw-bold mb-2' >
+                        {`${titulo}`}
+                        </span>
                     </div>
                 </div>
-            </header>
+            </nav>
         </>
     )
 }

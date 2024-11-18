@@ -2,20 +2,41 @@ import React from 'react'
 
 export const Sidebar = () => {
     return (
-
-        <header className="row mx-3">
-
-            <ul className="nav nav-pills" id="pills-tab" role="tablist">
-                <li className="nav-item" role="presentation">
-                    <button className="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
-                </li>
-                <li className="nav-item" role="presentation">
-                    <button className="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</button>
-                </li>
-                <li className="nav-item" role="presentation">
-                    <button className="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</button>
-                </li>
-            </ul>
-        </header>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark-black">
+            <div className="container-fluid text-center">
+                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse d-flex text-center" id="navbarNavDropdown">
+                    <ul className="navbar-nav">
+                        <li className="nav-item">
+                            <a className="nav-link" href="#">Dashboard</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link active" aria-current="page" href="#">POS</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="#">Clientes</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="#">Bodegas</a>
+                        </li>
+                        <li className="nav-item dropdown">
+                            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Productos
+                            </a>
+                            <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a className="dropdown-item" href="#">Productos</a></li>
+                                <li><a className="dropdown-item" href="#">Categorias</a></li>
+                                <li><a className="dropdown-item" href="#">Marcas</a></li>
+                            </ul>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="#">Reportes</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
     )
 }
