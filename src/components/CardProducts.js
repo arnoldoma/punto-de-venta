@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react"
 import { productosList } from "../data/productos";
 import { Navbar } from "./layout/Navbar";
+import { Modal } from "./Modal";
 
 const CardProducts = () => {
+  // DOBLE CLIK
+  let cliks = [];
+  let time = "";
 
   const [productos, setProductos] = useState([]);
   const [detalle, setDetalle] = useState([]);
   const [image, setImage] = useState('');
-  const [isActiveList, setIsActiveList] = useState(false)
-  const [focus, setFocus] = useState(true)
+  const [isActiveList, setIsActiveList] = useState(false);
+  const [focus, setFocus] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
   const [filter, setFilter] = useState('');
   const [pagos, setPagos] = useState(
     [
@@ -23,8 +29,11 @@ const CardProducts = () => {
     setProductos(productosList);
   }, [])
 
+  useEffect(() => {
+    setFocus(true)
+  }, [])
   const filteredProducts = productos.filter((product) =>
-    product.nombre.toLowerCase().includes(filter.toLowerCase())
+    product.nombre.toLowerCase().includes(filter.toLowerCase()),
   );
 
   const deleteItemProduct = (id) => {
@@ -36,7 +45,6 @@ const CardProducts = () => {
     const newPagos = pagos.filter((item) => item.id !== id)
     setPagos(newPagos);
   }
-
 
   // Agregar producto al carrito
   const productSelected = (id) => {
@@ -59,15 +67,46 @@ const CardProducts = () => {
         item.total = item.cantidad * item.precio
       }
     }
-    // return
   }
 
   const imageSelected = (id) => {
     const [product] = productos.filter((item) => item.id === id)
-    if (!id) {
-      return
+    if (id) {
+      setImage(product)
     }
-    setImage(product)
+  }
+
+  const onAutoFocus = () => {
+    setFocus(true)
+  };
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
+
+  const onDobleClickSelect = (id) => {
+    cliks.push(new Date().getTime());
+    window.clearTimeout(time);
+    time = window.setTimeout(() => {
+      if (cliks.length > 1 && (cliks[cliks.length - 1] - cliks[cliks.length - 2]) < 500) {
+        // Codigo
+        if (id === "") {
+          return
+        }
+        if (id) {
+          productSelected(id);
+          setFilter("");
+          setIsActiveList(false);
+        }
+
+      }
+    }, 500)
+  }
+
+  const styleSelect = {
+    height: "200px",
+    border: "none",
+    "margin-left": "-10px",
+    with: "100%",
+    "margin-right": "100px",
   }
 
   return (
@@ -87,15 +126,14 @@ const CardProducts = () => {
             <div className="card p-3 bg-dark text-white h-100 rounded">
               <div className="col-12">
                 <h4 className="card-title fs-6 d-flex justify-content-around align-items-center mt-2">PUNTO DE VENTA</h4>
-                <div className="row ">
+                <div className="row">
                   {/* Input para ingresar producto */}
                   <div className="col-12 col-md-12">
                     <div className="col-12">
                       <label className="fw-bold">Digite el producto a vender
                       </label>
                       <input
-                        autoFocus={focus}
-                        onFocus={(e) => focus}
+                        autoFocus
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
                             if (e.target.value === "") {
@@ -105,40 +143,45 @@ const CardProducts = () => {
                               return (
                                 setIsActiveList(false),
                                 setFilter(""),
-                                setFocus(true)
+                                productSelected(null),
+                                imageSelected(null)
                               )
                             }
                             setFilter(e.target.value);
                             if (filteredProducts) {
-                              productSelected(filteredProducts[0].id);
+                              // productSelected(filteredProducts[0].id);
                               setIsActiveList(false)
+                              setFilter("")
                             }
-                            setFocus(true)
                             e.target.value = "";
                             setFilter("");
-                            setFocus(true)
+                            imageSelected(null)
                           }
                         }}
                         value={filter}
                         onChange={(e) => {
                           if (e.target.value.length < 1) {
                             return (
+                              e.target.value = "",
+                              imageSelected(null),
                               setFilter(""),
-                              setIsActiveList(false)
+                              setIsActiveList(false),
+                              productSelected(null)
                             )
                           }
                           setFilter(e.target.value)
                           setIsActiveList(true)
+                          imageSelected(null)
+
                         }}
                         type="text"
                         placeholder="Ingrese el código de barras o el nombre del producto"
-                        className="form-control form-control-sm mt-2 bg-dark-lite"
+                        className="form-control form-control-sm mt-2 bg-dark-lite py-1 px-2"
                         id="iptCodigoVenta"
                         name="iptCodigoVenta"
                         aria-label="Small"
                         aria-describedby="inputGroup-sizing-sm"
                       />
-
                     </div>
                   </div>
 
@@ -146,41 +189,73 @@ const CardProducts = () => {
                   {isActiveList &&
                     // <div className="row">
                     <div className="col-12 col-md-12">
-                      <div className="row">
-                        <div className="col-12 col-lg-8">
+                      <div className="row border m-0 rounded-bottom">
+                        <div className="col-12 col-lg-8 ">
                           {filteredProducts &&
                             <select
-                              height={200}
+                              style={styleSelect}
                               multiple={true}
+                              onClick={(e) => onDobleClickSelect(e.target.value)}
+                              // onDoubleClick={(e)=>onDobleClickSelect(e.target.value)}
+                              onBlur={(e) => {
+                                return (
+                                  e.target.value = "",
+                                  setImage(""),
+                                  setIsActiveList(true),
+                                  onAutoFocus()
+                                )
+                              }}
                               onChange={(e) => {
-                                imageSelected(e.target.value);
-                                setIsActiveList(true)
+                                if (filteredProducts.length < 1) {
+                                  return (
+                                    e.target.value = "",
+                                    setFilter(""),
+                                    setIsActiveList(false),
+                                    productSelected(null),
+                                    imageSelected(e.target.value)
+                                  )
+                                }
+                                if (filteredProducts.length > 1) {
+                                  setIsActiveList(true)
+                                  imageSelected(e.target.value);
+                                }
+                                imageSelected(null)
                               }}
 
                               onKeyDown={(e) => {
+
                                 if (e.target.value === "") {
                                   return
                                 }
                                 if (e.key === "Enter") {
                                   productSelected(e.target.value);
                                   e.target.value = "";
-                                  setFocus(true);
                                   setFilter("");
                                   setIsActiveList(false);
+                                  imageSelected(null);
+                                  onAutoFocus();
                                 }
                               }}
-                              className="form-select bg-dark text-white"
+                              className="form-select bg-dark text-white w-100"
                               aria-label="Default select example"
+
                             >
                               {filteredProducts.map((item) => (
-                                <option key={item.id} value={item.id}> {item.nombre}</option>
+                                <option
+                                  key={item.id}
+                                  value={item.id}
+                                >
+                                  {item.nombre}
+                                </option>
                               ))}
                             </select>
                           }
                         </div>
-                        <div className="col-12 col-lg-4 text-center">
-                          <img height={150} src={image.url} className="rounded text-center border-secondary p-2" alt={image.nombre} />
-                        </div>
+                        {image &&
+                          <div className="col-12 col-lg-4 text-center">
+                            <img style={{ height: "190px", width: "200px", margin: "auto" }} src={image.url} className="rounded text-center p-2" alt={image.nombre} />
+                          </div>
+                        }
                       </div>
                     </div>
                     // </div>
@@ -303,24 +378,24 @@ const CardProducts = () => {
                 <div className="col-12 text-center p-3">
                   <h4 className="text-center">
                     <span>Datos del cliente  </span>
-                    <button className="btn btn-primary"> Nuevo</button>
+                    <button onClick={handleShow} className="btn btn-primary"> Nuevo</button>
                   </h4>
                   <div className="row border rounded ">
-                    <label for="nitcliente" className="col-12 text-center col-lg-4 col-form-label text-lg-end">Nit del cliente:</label>
+                    <label htmlFor="nitcliente" className="col-12 text-center col-lg-4 col-form-label text-lg-end">Nit del cliente:</label>
                     <div className="col-12 col-lg-8 align-content-center">
-                      <input type="text" className="text-center text-lg-left form-control bg-dark border-0 text-white fw-bold" name="nitcliente" value="1234594-9" />
+                      <input type="text" className="text-center text-lg-left form-control bg-dark border-0 text-white fw-bold" name="nitcliente" defaultValue="1234594-9" />
                     </div>
                   </div>
                   <div className="row border rounded text-center bg-secondary text-white">
-                    <label for="nombrecliente" className="col-12 col-lg-4 col-form-label text-center text-lg-end">Nombre:</label>
+                    <label htmlFor="nombrecliente" className="col-12 col-lg-4 col-form-label text-center text-lg-end">Nombre:</label>
                     <div className="col-12 text-center col-lg-8">
-                      <input type="text" readonly className="text-center text-lg-left form-control-plaintext text-white fw-bold" name="nombrecliente" value="Juan Carlos Pineda" />
+                      <input type="text" disabled className="text-center text-lg-left form-control-plaintext text-white fw-bold" name="nombrecliente" defaultValue="Juan Carlos Pineda" />
                     </div>
                   </div>
                   {/* <div className="row border rounded text-center bg-secondary text-white">
-                    <label for="nombrecliente" className="col-12 col-lg-4 col-form-label text-center text-lg-end">Dirección:</label>
+                    <label htmlFor="nombrecliente" className="col-12 col-lg-4 col-form-label text-center text-lg-end">Dirección:</label>
                     <div className="col-12 col-lg-8">
-                      <input type="text" readonly className="text-center text-lg-left form-control-plaintext text-white fw-bold" name="nombrecliente" value="San Juan La laguna, Zaragoza" />
+                      <input type="text" readOnly className="text-center text-lg-left form-control-plaintext text-white fw-bold" name="nombrecliente" value="San Juan La laguna, Zaragoza" />
                     </div>
                   </div> */}
                 </div>
@@ -378,6 +453,48 @@ const CardProducts = () => {
             </div>
           </div>
 
+          <Modal
+            showModal={showModal}
+            handleShow={handleShow}
+            handleClose={handleClose}
+
+          >
+            <div className="card-body">
+              <div className="row text-white rounded p-2">
+                <div className="col-12">
+                  <div className="row">
+                    {/* Identificador */}
+                    <div className="mb-2 col-md-12">
+                      <input
+                        autoFocus
+                        name="identificadorCli"
+                        placeholder="Identificador"
+                        className="form-control"
+                        // component={renderinput}
+                        // disabled={editar ? true : disabled}
+                        msj="Identificador"
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    {/* Identificador */}
+                    <div className="mb-2 col-md-12">
+                      <input
+                        autoFocus
+                        name="identificadorCli"
+                        placeholder="Identificador"
+                        className="form-control"
+                        // component={renderinput}
+                        // disabled={editar ? true : disabled}
+                        msj="Identificador"
+                      />
+                    </div>
+                  </div>
+                </div>
+                {/* Modal footer */}
+              </div>
+            </div>
+          </Modal>
           {/* Botones */}
           {/* <div className='col-12 col-lg-12 mt-2   '>
             <div className="card p-3 my-3 bg-dark text-white border rounded">

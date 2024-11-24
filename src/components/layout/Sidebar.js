@@ -2,7 +2,7 @@ import React from 'react'
 
 export const Sidebar = () => {
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark-black">
+        <nav className="navbar fixed-sidebar navbar-expand-lg navbar-dark bg-dark-black">
             <div className="container-fluid text-center">
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>

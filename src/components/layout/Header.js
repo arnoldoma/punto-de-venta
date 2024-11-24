@@ -39,7 +39,7 @@ const Header = () => {
         //     </div>
         // </header>
 
-        <nav className="navbar navbar-expand navbar-dark text-white bg-dark-card">
+        <nav className="navbar fixed-top navbar-expand navbar-dark text-white bg-dark-card">
           <div className="container-fluid">
             <a className="navbar-brand image-logo align-items-center justify-content-center text-center" href="#">
               <img src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" className="d-inline-block align-text-center" />

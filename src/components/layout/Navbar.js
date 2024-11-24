@@ -3,7 +3,7 @@ import React from 'react'
 export const Navbar = ({iconModulo,iconTitle, modulo, titulo}) => {
     return (
         <>
-            <nav className="row mx-2 bg-dark-card rounded-bottom">
+            <nav className="row mx-2 bg-dark-card rounded-bottom fixed-navbar">
                 <div className="col-12 d-flex flex-row text-white justify-content-between align-items-center">
                     <div className="row text-secondary">
                         <h3>{`${modulo}`}</h3>

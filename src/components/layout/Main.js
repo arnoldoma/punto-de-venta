@@ -4,7 +4,8 @@ import Header from './Header'
 import { Sidebar } from './Sidebar'
 import { Navbar } from './Navbar'
 import ImageTemp from '../ImageTemp'
-import Content from '../Content'
+import Content from '../ContentPos'
+import { Modal } from '../Modal'
 
 const MainContent = () => {
     return (
@@ -12,7 +13,9 @@ const MainContent = () => {
             <div className='w-100'>
                 <Header />
                 <Sidebar/>
-                <Content />
+                <CardProducts />
+                <Modal/>
+                
             </div>
         </>
     )
