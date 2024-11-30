@@ -10,7 +10,14 @@ const CardProducts = () => {
 
   const [productos, setProductos] = useState([]);
   const [detalle, setDetalle] = useState([]);
+  const [editIndex, setEditIndex] = useState(null);
+  const [editIndexAdd, setEditIndexAdd] = useState(null);
+  const [editCantidad, setEditCantidad] = useState(0.00);
+  const [editPrecio, setEditPrecio] = useState(0.00);
+  const [editTotal, setEditTotal] = useState(0.00);
   const [image, setImage] = useState('');
+
+
   const [isActiveList, setIsActiveList] = useState(false);
   const [focus, setFocus] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -36,20 +43,112 @@ const CardProducts = () => {
     product.nombre.toLowerCase().includes(filter.toLowerCase()),
   );
 
+  // Load editIndex
+  useEffect(() => {
+    // setEditCantidad(...detalle, { id: editIndex });
+    if (editIndex !== null) {
+      const editItem = detalle.filter((item) => item.id === editIndex);
+      setEditCantidad(editItem[0].cantidad);
+      setEditPrecio(editItem[0].precio);
+      setEditTotal(editItem[0].total);
+    } else {
+      setEditCantidad('');
+      setEditPrecio('');
+      setEditTotal('');
+    }
+  }, [editIndex, detalle]);
+
+  useEffect(() => {
+    // console.log(`antes ${editIndexAdd}`);
+    // setEditCantidad(...detalle, { id: editIndexAdd });
+    if (editIndexAdd !== null) {
+      console.log(`despues ${editIndexAdd}`);
+      const editItem = detalle.filter((item) => item.id === editIndexAdd);
+      if (editIndexAdd !== editItem[0].id) {
+        return console.log("No coincide");
+      } else {
+        console.log(`Coincide ${editItem[0].id}`);
+      }
+      let cant = Number(editItem[0].cantidad) + 1;
+      setEditCantidad(cant);
+      setEditPrecio(editItem[0].precio);
+      setEditTotal((cant) * editItem[0].precio);
+    }
+  }, [editIndexAdd, detalle]);
+
+  // Index edition
+  const startEditionChange = (index) => {
+    setEditIndex(index);
+  }
+  // Index edition
+  const startEditionSelect = (index) => {
+    const editItem = detalle.filter((item) => item.id === index);
+    if (editItem.length > 0) {
+      console.log("lo encontro");
+      console.log(editItem);
+      setEditIndexAdd(index);
+    }
+    // console.log(editItem);
+    return
+  }
+
+  // Manejador evento de cantidad
+  const changeManageCantidad = (e) => {
+    setEditCantidad(e.target.value);
+    setEditTotal(editPrecio * e.target.value);
+  }
+  // Manejador evento de Precio
+  const changeManagePrecio = (e) => {
+    setEditPrecio(e.target.value);
+    setEditTotal(editCantidad * e.target.value);
+  }
+  // Manejador evento de Total
+  const changeManageTotal = (e) => {
+    setEditTotal(editCantidad * editPrecio);
+  }
+  // Captura los cambios y guardar
+  const saveChange = (index) => {
+    const nuevoDetalle = detalle.map((item) => (item.id === index ? { ...item, cantidad: editCantidad, precio: editPrecio, total: editTotal } : item));
+    setDetalle(nuevoDetalle);
+    setEditIndex(null);
+    // setEditIndexAdd(null);
+    // setEditCantidad("");
+    // setEditPrecio("");
+    // setEditTotal("");
+  }
+
+  const saveChangeSelect = (index) => {
+    console.log(editIndexAdd);
+    console.log(editCantidad);
+    console.log(editPrecio);
+    console.log(editTotal);
+    
+    console.log( index );
+    console.log( editIndexAdd );
+    if (index === editIndexAdd) {      
+      const nuevoDetalle = detalle.map((item) => (item.id === index ? { ...item, cantidad: editCantidad, precio: editPrecio, total: editTotal } : item));
+      setDetalle(nuevoDetalle);
+      console.log(nuevoDetalle);
+      setEditIndexAdd(null);
+      setEditCantidad("");
+      setEditPrecio("");
+      setEditTotal("");
+    }
+  }
+
   const deleteItemProduct = (id) => {
     const newDetails = detalle.filter((item) => item.id !== id)
     setDetalle(newDetails);
   }
-
   const deleteItemPago = (id) => {
     const newPagos = pagos.filter((item) => item.id !== id)
     setPagos(newPagos);
   }
 
   // Agregar producto al carrito
-  const productSelected = (id) => {
-    if (id) {
 
+  const handleOnSubmitProduct = id => {
+    if (id) {
       const [item] = detalle.filter((item) => item.id === id)
       if (!item) {
         const [product] = productos.filter((item) => item.id === id)
@@ -58,13 +157,16 @@ const CardProducts = () => {
           nombre: product.nombre,
           cantidad: 1,
           precio: product.precio,
-          total: product.precio * 1
+          total: (product.precio * 1)
         }
-        setImage("")
-        setDetalle([newItem, ...detalle])
+        setEditCantidad("")
+        setEditPrecio("")
+        setEditTotal("");
+        setImage("");
+        setDetalle([newItem, ...detalle]);
+        console.log(`Agregado ${id}`);
       } else {
-        item.cantidad = item.cantidad + 1
-        item.total = item.cantidad * item.precio
+        return 
       }
     }
   }
@@ -79,6 +181,7 @@ const CardProducts = () => {
   const onAutoFocus = () => {
     setFocus(true)
   };
+
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
@@ -87,18 +190,22 @@ const CardProducts = () => {
     window.clearTimeout(time);
     time = window.setTimeout(() => {
       if (cliks.length > 1 && (cliks[cliks.length - 1] - cliks[cliks.length - 2]) < 500) {
-        // Codigo
+        // Guarda los un nuevo detalle
         if (id === "") {
           return
         }
         if (id) {
-          productSelected(id);
+          handleOnSubmitProduct(id);
+          saveChangeSelect(id);
           setFilter("");
           setIsActiveList(false);
         }
-
       }
     }, 500)
+    // Setea los valores si ya se encuetra en el detalle
+    if (cliks.length===1) {
+      startEditionSelect(id)
+    }
   }
 
   const styleSelect = {
@@ -106,7 +213,6 @@ const CardProducts = () => {
     border: "none",
     "margin-left": "-10px",
     with: "100%",
-    "margin-right": "100px",
   }
 
   return (
@@ -143,19 +249,18 @@ const CardProducts = () => {
                               return (
                                 setIsActiveList(false),
                                 setFilter(""),
-                                productSelected(null),
+                                handleOnSubmitProduct(null),
                                 imageSelected(null)
                               )
                             }
                             setFilter(e.target.value);
                             if (filteredProducts) {
-                              // productSelected(filteredProducts[0].id);
                               setIsActiveList(false)
                               setFilter("")
                             }
                             e.target.value = "";
                             setFilter("");
-                            imageSelected(null)
+                            imageSelected(null);
                           }
                         }}
                         value={filter}
@@ -166,13 +271,12 @@ const CardProducts = () => {
                               imageSelected(null),
                               setFilter(""),
                               setIsActiveList(false),
-                              productSelected(null)
+                              handleOnSubmitProduct(null)
                             )
                           }
                           setFilter(e.target.value)
                           setIsActiveList(true)
                           imageSelected(null)
-
                         }}
                         type="text"
                         placeholder="Ingrese el código de barras o el nombre del producto"
@@ -211,24 +315,26 @@ const CardProducts = () => {
                                     e.target.value = "",
                                     setFilter(""),
                                     setIsActiveList(false),
-                                    productSelected(null),
-                                    imageSelected(e.target.value)
+                                    handleOnSubmitProduct(null),
+                                    imageSelected(null)
                                   )
                                 }
                                 if (filteredProducts.length > 1) {
                                   setIsActiveList(true)
                                   imageSelected(e.target.value);
+                                  startEditionSelect(e.target.value);
                                 }
                                 imageSelected(null)
+                                startEditionSelect(null)
                               }}
 
                               onKeyDown={(e) => {
-
                                 if (e.target.value === "") {
                                   return
                                 }
                                 if (e.key === "Enter") {
-                                  productSelected(e.target.value);
+                                  handleOnSubmitProduct(e.target.value);
+                                  saveChangeSelect(e.target.value);
                                   e.target.value = "";
                                   setFilter("");
                                   setIsActiveList(false);
@@ -284,11 +390,48 @@ const CardProducts = () => {
                               <tr key={item.id}>
                                 <td>{item.id}</td>
                                 <td>{item.nombre}</td>
-                                <td className="text-center">{item.cantidad}</td>
-                                <td className="text-center">{item.precio}</td>
-                                <td className="text-center">{item.total}</td>
                                 <td className="text-center">
-                                  <button className="btn-success text-lg bg-dark text-white px-2" onClick={(e) => deleteItemProduct(item.id)} >X</button>
+                                  <div className="m-0 p-0">
+                                    <input type="text"
+                                      className="bg-dark-lite text-white border-0 rounded text-center"
+                                      name="inputCantidad"
+                                      value={editIndex === item.id ? editCantidad : item.cantidad}
+                                      onChange={changeManageCantidad}
+                                      onFocus={() => startEditionChange(item.id)}
+                                      onBlur={() => saveChange(item.id)}
+                                      style={{ width: "70px" }} />
+                                  </div>
+                                </td>
+                                <td className="text-center">
+                                  <div className="m-0 p-0">
+                                    <input type="text"
+                                      className="bg-dark-lite text-white border-0 rounded text-center"
+                                      name="inputPrecio"
+                                      value={editIndex === item.id ? editPrecio : item.precio}
+                                      onChange={changeManagePrecio}
+                                      onFocus={() => startEditionChange(item.id)}
+                                      onBlur={() => saveChange(item.id)}
+
+                                      style={{ width: "70px" }} />
+                                  </div>
+                                </td>
+                                <td className="text-center">
+                                  <div className="m-0 p-0">
+                                    <input type="text"
+                                      className="bg-dark-lite text-white border-0 rounded text-center"
+                                      name="inputTotal"
+                                      value={editIndex === item.id ? editTotal : item.total}
+                                      onChange={changeManageTotal}
+                                      onFocus={() => startEditionChange(item.id)}
+                                      onBlur={() => saveChange(item.id)}
+                                      disabled={true}
+                                      style={{ width: "70px" }} />
+                                  </div>
+                                </td>
+                                <td className="text-center">
+                                  <button className="btn-success text-lg bg-dark text-white px-2"
+                                    onClick={(e) => deleteItemProduct(item.id)}
+                                  >X</button>
                                 </td>
                               </tr>
                             ))}
