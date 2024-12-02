@@ -39,13 +39,13 @@ const CardProducts = () => {
   useEffect(() => {
     setFocus(true)
   }, [])
+
   const filteredProducts = productos.filter((product) =>
     product.nombre.toLowerCase().includes(filter.toLowerCase()),
   );
 
   // Load editIndex
   useEffect(() => {
-    // setEditCantidad(...detalle, { id: editIndex });
     if (editIndex !== null) {
       const editItem = detalle.filter((item) => item.id === editIndex);
       setEditCantidad(editItem[0].cantidad);
@@ -59,20 +59,18 @@ const CardProducts = () => {
   }, [editIndex, detalle]);
 
   useEffect(() => {
-    // console.log(`antes ${editIndexAdd}`);
-    // setEditCantidad(...detalle, { id: editIndexAdd });
     if (editIndexAdd !== null) {
-      console.log(`despues ${editIndexAdd}`);
       const editItem = detalle.filter((item) => item.id === editIndexAdd);
-      if (editIndexAdd !== editItem[0].id) {
-        return console.log("No coincide");
+      if (editItem.length > 0 && (editIndexAdd !== editItem[0].id)) {
+        return
       } else {
-        console.log(`Coincide ${editItem[0].id}`);
+        if (editItem.length > 0) {
+          let cant = Number(editItem[0].cantidad) + 1;
+          setEditCantidad(cant);
+          setEditPrecio(editItem[0].precio);
+          setEditTotal((cant) * editItem[0].precio);
+        }
       }
-      let cant = Number(editItem[0].cantidad) + 1;
-      setEditCantidad(cant);
-      setEditPrecio(editItem[0].precio);
-      setEditTotal((cant) * editItem[0].precio);
     }
   }, [editIndexAdd, detalle]);
 
@@ -80,15 +78,12 @@ const CardProducts = () => {
   const startEditionChange = (index) => {
     setEditIndex(index);
   }
-  // Index edition
+  // Index Add if exist
   const startEditionSelect = (index) => {
     const editItem = detalle.filter((item) => item.id === index);
     if (editItem.length > 0) {
-      console.log("lo encontro");
-      console.log(editItem);
       setEditIndexAdd(index);
     }
-    // console.log(editItem);
     return
   }
 
@@ -111,24 +106,15 @@ const CardProducts = () => {
     const nuevoDetalle = detalle.map((item) => (item.id === index ? { ...item, cantidad: editCantidad, precio: editPrecio, total: editTotal } : item));
     setDetalle(nuevoDetalle);
     setEditIndex(null);
-    // setEditIndexAdd(null);
-    // setEditCantidad("");
-    // setEditPrecio("");
-    // setEditTotal("");
+    setEditCantidad("");
+    setEditPrecio("");
+    setEditTotal("");
   }
 
   const saveChangeSelect = (index) => {
-    console.log(editIndexAdd);
-    console.log(editCantidad);
-    console.log(editPrecio);
-    console.log(editTotal);
-    
-    console.log( index );
-    console.log( editIndexAdd );
-    if (index === editIndexAdd) {      
+    if (index === editIndexAdd) {
       const nuevoDetalle = detalle.map((item) => (item.id === index ? { ...item, cantidad: editCantidad, precio: editPrecio, total: editTotal } : item));
       setDetalle(nuevoDetalle);
-      console.log(nuevoDetalle);
       setEditIndexAdd(null);
       setEditCantidad("");
       setEditPrecio("");
@@ -137,6 +123,9 @@ const CardProducts = () => {
   }
 
   const deleteItemProduct = (id) => {
+    if (!id) {
+      return
+    }
     const newDetails = detalle.filter((item) => item.id !== id)
     setDetalle(newDetails);
   }
@@ -164,10 +153,8 @@ const CardProducts = () => {
         setEditTotal("");
         setImage("");
         setDetalle([newItem, ...detalle]);
-        console.log(`Agregado ${id}`);
-      } else {
-        return 
       }
+      return
     }
   }
 
@@ -190,10 +177,10 @@ const CardProducts = () => {
     window.clearTimeout(time);
     time = window.setTimeout(() => {
       if (cliks.length > 1 && (cliks[cliks.length - 1] - cliks[cliks.length - 2]) < 500) {
-        // Guarda los un nuevo detalle
         if (id === "") {
           return
         }
+
         if (id) {
           handleOnSubmitProduct(id);
           saveChangeSelect(id);
@@ -202,8 +189,8 @@ const CardProducts = () => {
         }
       }
     }, 500)
-    // Setea los valores si ya se encuetra en el detalle
-    if (cliks.length===1) {
+    if (cliks.length === 1) {
+      // Setea los valores si ya se encuetra en el detalle
       startEditionSelect(id)
     }
   }
@@ -328,6 +315,10 @@ const CardProducts = () => {
                                 startEditionSelect(null)
                               }}
 
+                              onKeyUp={(e) => {
+                                imageSelected(e.target.value);
+                                startEditionSelect(e.target.value)
+                              }}
                               onKeyDown={(e) => {
                                 if (e.target.value === "") {
                                   return
@@ -420,7 +411,7 @@ const CardProducts = () => {
                                     <input type="text"
                                       className="bg-dark-lite text-white border-0 rounded text-center"
                                       name="inputTotal"
-                                      value={editIndex === item.id ? editTotal : item.total}
+                                      value={editIndex === item.id ? parseFloat(editTotal).toFixed(2) : parseFloat(item.total).toFixed(2)}
                                       onChange={changeManageTotal}
                                       onFocus={() => startEditionChange(item.id)}
                                       onBlur={() => saveChange(item.id)}
@@ -452,16 +443,29 @@ const CardProducts = () => {
                               <div className="row">
                                 <div className="col-12 col-md-12 d-flex justify-content-between">
                                   <span>SUBTOTAL</span>
-                                  <span className="float-right" id="resumen_subtotal">Q/ 0.00</span>
+                                  <span className="float-right" id="resumen_subtotal">Q. {parseFloat(detalle.reduce((prod, index) => prod + index.total, 0)).toFixed(2)}</span>
                                 </div>
                                 <div className="col-12 col-md-12 d-flex justify-content-between">
                                   <span>IVA</span>
-                                  <span className="float-right" id="resumen_total_igv">Q/ 0.00</span>
+                                  <span className="float-right" id="resumen_total_igv">
+                                    {/* <div className="m-0 p-0">
+                                    <input type="text"
+                                      className="bg-dark-lite text-white border-0 text-end rounded"
+                                      name="inputTotal"
+                                      // value={editIndex === item.id ? parseFloat(editTotal).toFixed(2) : parseFloat(item.total).toFixed(2)}
+                                      // onChange={changeManageTotal}
+                                      // onFocus={() => startEditionChange(item.id)}
+                                      // onBlur={() => saveChange(item.id)}
+                                      // disabled={true}
+                                      style={{ width: "70px" }} />
+                                  </div> */}
+                                    Q/ 2.50
+                                  </span>
                                 </div>
                                 <hr className="m-1" />
                                 <div className="col-12 col-md-12 d-flex justify-content-between fw-bold">
                                   <span>TOTAL</span>
-                                  <span className="float-right " id="resumen_total_venta">Q/ 0.00</span>
+                                  <span className="float-right " id="resumen_total_venta">Q. {parseFloat(detalle.reduce((prod, index) => prod + index.total, 0)).toFixed(2)}</span>
                                 </div>
                               </div>
                             </div>
